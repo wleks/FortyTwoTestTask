@@ -48,3 +48,28 @@ class HomePageTest(TestCase):
                         startswith(b'<!DOCTYPE html>'))
         self.assertIn(b'<title>Visiting Card</title>', response.content)
         self.assertTrue(response.content.strip().endswith(b'</html>'))
+
+
+class RequestAjaxTest(TestCase):
+    def test_request_ajax_view(self):
+        """Test request_ajax view"""
+        response = self.client.get(reverse('contact:home'))
+        response = self.client.get(reverse('contact:request_ajax'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertIn('method', response.content)
+        self.assertIn('GET', response.content)
+        self.assertIn('path', response.content)
+        self.assertIn('/', response.content)
+
+
+class RequestViewTest(TestCase):
+    def test_request_view(self):
+        """Test request_view view"""
+
+        response = self.client.get(reverse('contact:request'))
+
+        self.assertTemplateUsed(response, 'request.html')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response,
+                            '<h1>42 Coffee Cups Test Assignmen</h1>',
+                            html=True)
