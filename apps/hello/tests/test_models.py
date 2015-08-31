@@ -70,5 +70,3 @@ class PersonModelTests(TestCase):
         self.assertEquals(only_person.surname, 'Woronow')
         self.assertEquals(only_person.bio, 'I was born ...')
         self.assertEquals(str(only_person), 'Woronow Aleks')
-
-
