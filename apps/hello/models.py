@@ -15,6 +15,21 @@ class Person(models.Model):
                                 blank=True,
                                 max_length=250)
     other = models.TextField('other contact', blank=True)
+    image = models.ImageField('photo',
+                              blank=True,
+                              null=True,
+                              upload_to='photo/',
+                              height_field='height',
+                              width_field='width')
+    height = models.PositiveIntegerField(default=1, null=True, blank=True)
+    width = models.PositiveIntegerField(default=1,  null=True, blank=True)
+
+    def gauge_height(self):
+        width = 200
+        ratio = float(self.height)/float(self.width)
+        height = width*ratio
+        size_photo = {'w': width, 'h': height}
+        return size_photo
 
     def __unicode__(self):
         return '%s %s' % (self.surname, self.name)

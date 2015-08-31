@@ -54,6 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.middleware.helloRequest.RequestMiddle',
+    'apps.middleware.httpPostTunnel.HttpPostTunnelingMiddleware',
 )
 
 ROOT_URLCONF = 'fortytwo_test_task.urls'
