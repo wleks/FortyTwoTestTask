@@ -1,3 +1,10 @@
 from django.shortcuts import render
 
-# Create your views here.
+from .models import Person
+
+
+def home_page(request):
+    context = {}
+    person = Person.objects.first()
+    context['person'] = person
+    return render(request, 'home.html', context)
