@@ -76,3 +76,14 @@ class RequestViewTest(TestCase):
         self.assertContains(response,
                             '<h1>42 Coffee Cups Test Assignmen</h1>',
                             html=True)
+
+
+class FormPageTest(TestCase):
+    def test_form_page_view(self):
+        """Test view form_page"""
+        response = self.client.get(reverse('contact:form'))
+        self.assertEqual(response.status_code, 302)
+
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(reverse('contact:form'))
+        self.assertIn('name', response.content)

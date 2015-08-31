@@ -12,7 +12,9 @@ urlpatterns = patterns(
     # url(r'^$', 'fortytwo_test_task.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^', include('hello.urls', namespace='contact')),
+
     url(r'^admin/', include(admin.site.urls)),
+    url('^accounts/', include('django.contrib.auth.urls')),
 )
 
 if settings.DEBUG:

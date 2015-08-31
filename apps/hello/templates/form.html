@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Change contact</h3>
+
+<form id="person-form"  action="{% url 'contact:form' %}" method="post">{% csrf_token %}
+    {{form.media}}
+    {% for field in form %}
+    {% if forloop.counter == 5 %}
+      <h3>Contacts</h3>
+    {% endif %}
+    <div class="form-group">
+
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }} <div id="error_{{ field.label|lower}}" class="has-error"></div>
+    </div>
+    {% endfor %}
+    <button class="btn btn-default" type="submit">Submit</button>
+</form>
+<div id="form-loading"></div>
+{% endblock content %}
+{% block script %}
+     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js"></script>
+     <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>    
+{% endblock script %}
