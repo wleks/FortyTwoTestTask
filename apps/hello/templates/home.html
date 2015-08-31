@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+     <div class="col-md-6">
+          <ul class="list-group"><strong>Person</strong>
+               <li class="list-group-item">Name: {{ person.name }}</li>
+               <li class="list-group-item">Surname: {{ person.surname }}</li>
+               <li class="list-group-item">Date of birth: {{ person.date_of_birth }}</li>
+               <li class="list-group-item">Bio: {{ person.bio }}</li>
+          </ul>
+     </div>      
+     <div class="col-md-6">
+          <ul class="list-group"><strong>Contacts</strong>
+               <li class="list-group-item">Email: {{person.email}}</li>
+               <li class="list-group-item">Jabber: {{person.jabber}}</li>
+               <li class="list-group-item">Skype id: {{person.skype_id}}</li>
+               <li class="list-group-item">Other contacts: {{person.other}}</li>
+          </ul>
+         
+     </div>     
+ </div>      
+{% endblock content %}
