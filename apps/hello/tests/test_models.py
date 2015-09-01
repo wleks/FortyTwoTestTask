@@ -10,6 +10,8 @@ from ..models import Person
 
 
 class PersonModelTests(TestCase):
+    fixtures = ['_initial_data.json']
+
     def test_person_model(self):
         """Test creating a new person and saving it to the database"""
         person = Person()

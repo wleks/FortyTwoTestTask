@@ -11,6 +11,8 @@ from ..views import home_page
 
 
 class HomePageViewTest(TestCase):
+    fixtures = ['_initial_data.json']
+
     def setUp(self):
         self.factory = RequestFactory()
         self.person = Person.objects.first()
@@ -26,6 +28,8 @@ class HomePageViewTest(TestCase):
 
 
 class HomePageTest(TestCase):
+    fixtures = ['_initial_data.json']
+
     def test_home_page(self):
         """Test home page"""
 
@@ -79,6 +83,8 @@ class RequestViewTest(TestCase):
 
 
 class FormPageTest(TestCase):
+    fixtures = ['_initial_data.json']
+
     def test_form_page_view(self):
         """Test view form_page"""
         response = self.client.get(reverse('contact:form'))

@@ -1,24 +1,6 @@
 [
 {
     "pk": 1, 
-    "model": "auth.user", 
-    "fields": {
-        "username": "admin", 
-        "first_name": "", 
-        "last_name": "", 
-        "is_active": true, 
-        "is_superuser": true, 
-        "is_staff": true, 
-        "last_login": "2015-08-31T19:48:14.628Z", 
-        "groups": [], 
-        "user_permissions": [], 
-        "password": "pbkdf2_sha256$12000$GDglVp9DPcmx$TmqItS2/Vx3GW6/DvPBIO+srTY4aI8/g3M6wBx0Vd2o=", 
-        "email": "", 
-        "date_joined": "2015-08-31T19:47:27.870Z"
-    }
-},
-{
-    "pk": 1, 
     "model": "hello.person", 
     "fields": {
         "bio": "I was born ...", 
@@ -27,7 +9,7 @@
         "other": "", 
         "date_of_birth": "2015-08-22", 
         "skype_id": "", 
-        "jabber": "42cc@khavr.com", 
+        "jabber": "aleksw@42cc.com", 
         "email": "aleks.woronow@yandex.ru"
     }
 }
