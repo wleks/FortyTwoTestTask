@@ -13,6 +13,8 @@ from ..views import home_page
 
 
 class RequestMiddlewareTests(TestCase):
+    fixtures = ['_initial_data.json']
+
     def setUp(self):
         self.factory = RequestFactory()
         self.middleware = RequestMiddle()
