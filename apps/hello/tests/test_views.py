@@ -83,6 +83,8 @@ class RequestViewTest(TestCase):
 
 
 class FormPageTest(TestCase):
+    fixtures = ['_initial_data.json']
+
     def test_form_page_view(self):
         """Test view form_page"""
         response = self.client.get(reverse('contact:form'))
