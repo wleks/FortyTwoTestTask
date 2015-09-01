@@ -70,7 +70,8 @@ def form_page(request):
                 if getattr(settings, 'DEBUG', False):
                     time.sleep(3)
                 msg = 'Contact was changed'
-                return HttpResponse(json.dumps({'msg': msg}))
+                return HttpResponse(json.dumps({'msg': msg}),
+                                    content_type="application/json")
             else:
                 return redirect('hello:success')
         else:
