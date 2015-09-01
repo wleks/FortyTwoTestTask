@@ -1,11 +1,29 @@
 [
 {
     "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "admin", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2015-08-22T17:23:14.540Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$a79yhOKs2AqA$8Ozkkb132rMEod8zpL55VhbfbsZ6rlFy3pzFO7ToAF4=", 
+        "email": "", 
+        "date_joined": "2015-08-12T09:19:52.102Z"
+    }
+},
+{
+    "pk": 1, 
     "model": "hello.person", 
     "fields": {
         "bio": "I was born ...", 
-        "surname": "Woronow", 
-        "name": "Aleksey", 
+        "surname": "Aleksey", 
+        "name": "Woronow", 
         "other": "", 
         "date_of_birth": "2015-08-22", 
         "skype_id": "", 
@@ -14,3 +32,4 @@
     }
 }
 ]
+
