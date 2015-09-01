@@ -10,6 +10,8 @@ from ..views import home_page
 
 
 class HomePageViewTest(TestCase):
+    fixtures = ['_initial_data.json']
+
     def setUp(self):
         self.factory = RequestFactory()
         self.person = Person.objects.first()
@@ -24,6 +26,8 @@ class HomePageViewTest(TestCase):
 
 
 class HomePageTest(TestCase):
+    fixtures = ['_initial_data.json']
+
     def test_home_page(self):
         """Test home page"""
 
