@@ -21,13 +21,13 @@
     "pk": 1, 
     "model": "hello.person", 
     "fields": {
-        "bio": "I was born ...", 
-        "surname": "Aleksey", 
-        "name": "Woronow", 
+        "bio": "I was born ...\r\nI graduated from high school ...", 
+        "surname": "Woronow", 
+        "name": "Aleksey", 
         "other": "", 
         "date_of_birth": "2015-08-22", 
         "skype_id": "", 
-        "jabber": "42cc@khavr.com", 
+        "jabber": "aleksw@42cc.com", 
         "email": "aleks.woronow@yandex.ru"
     }
 }
