@@ -22,14 +22,14 @@ class RequestMiddlewareTests(TestCase):
         self.user = get_user_model().objects.get(id=1)
 
     def test_middleware_is_included(self):
-        """Test for inclusion RequestMiddleware in project"""
+        """Test check that RequestMiddleware is included in project."""
         self.client.get(reverse('contact:home'))
         last_middleware_obj = self.request_store.objects.last()
         self.assertEqual(last_middleware_obj.method, 'GET')
         self.assertEqual(last_middleware_obj.path, reverse('contact:home'))
 
-    def test_middleware(self):
-        """Test middleware RequestMiddle."""
+    def test_decorator_middleware(self):
+        """Test check not_record_request decorator."""
         request = self.factory.get(reverse('contact:home'))
 
         # middleware don't store request to decorated function
@@ -47,7 +47,7 @@ class RequestMiddlewareTests(TestCase):
         only_one_rs = rs[0]
         self.assertEqual(only_one_rs.path, reverse('contact:home'))
 
-        # if user is anonymous
+        # middleware store request to undecorated function if user is anonymous
         request.user = AnonymousUser()
         self.middleware.process_view(request, home_page)
         rs = self.request_store.objects.all()
