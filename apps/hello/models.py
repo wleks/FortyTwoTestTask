@@ -26,8 +26,13 @@ class Person(models.Model):
 
     def gauge_height(self):
         width = 200
-        ratio = float(self.height)/float(self.width)
-        height = width*ratio
+        height = 200
+
+        if self.height > self.width:
+            width = int(float(self.width)/float(self.height)*height)
+        elif self.height < self.width:
+            height = int(float(self.height)/float(self.width)*width)
+
         size_photo = {'w': width, 'h': height}
         return size_photo
 

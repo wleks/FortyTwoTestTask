@@ -44,8 +44,10 @@ def request_ajax(request):
 @not_record_request
 def form_page(request):
     person = Person.objects.first()
-    if request.method == 'PUT':
-        form = PersonForm(request.PUT)
+
+    if request.method == 'POST':
+        form = PersonForm(request.POST, request.FILES)
+
         if form.is_valid():
             name = form.cleaned_data.get('name')
             surname = form.cleaned_data.get('surname')
@@ -55,6 +57,11 @@ def form_page(request):
             jabber = form.cleaned_data.get('jabber')
             skype_id = form.cleaned_data.get('skype_id')
             other = form.cleaned_data.get('other')
+            image = form.cleaned_data.get('image')
+
+            if request.POST.get('image-clear') is None:
+                if image is None:
+                    image = person.image
 
             p = Person(id=person.id,
                        name=name,
@@ -64,32 +71,24 @@ def form_page(request):
                        email=email,
                        jabber=jabber,
                        skype_id=skype_id,
-                       other=other)
+                       other=other,
+                       image=image)
             p.save()
             if request.is_ajax():
                 if getattr(settings, 'DEBUG', False):
                     time.sleep(3)
                 msg = 'Contact was changed'
-                return HttpResponse(json.dumps({'msg': msg}),
+                return HttpResponse(json.dumps({"msg": msg}),
                                     content_type="application/json")
             else:
-                return redirect('hello:success')
+                return redirect('contact:success')
         else:
             if request.is_ajax():
                 if getattr(settings, 'DEBUG', False):
                     time.sleep(2)
                 errors = json.dumps(form.errors)
-                return HttpResponse(errors)
+                return HttpResponse(errors, content_type="application/json")
     else:
-
-        form = PersonForm(initial={
-            'name': person.name,
-            'surname': person.surname,
-            'date_of_birth': person.date_of_birth,
-            'bio': person.bio,
-            'email': person.email,
-            'jabber': person.jabber,
-            'skype_id': person.skype_id,
-            'other': person.other})
+        form = PersonForm(instance=person)
 
     return render(request, 'form.html', {'form': form})
