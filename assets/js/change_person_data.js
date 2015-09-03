@@ -1,6 +1,14 @@
+var csrftoken = $.cookie('csrftoken');
+
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function beforeSendHandler(xhr, settings) {
+    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
 }
 
 $(document).ready(function(){
@@ -29,43 +37,46 @@ $(document).ready(function(){
                     required: true,
                     email: true
                 },
-
+                image: {
+                    required: false,
+                    accept: 'image/*'
+                }
             },
             submitHandler: function(form) {
-                var csrftoken = $.cookie('csrftoken');
                 var $form = $(form);
-                $form.find('.form-control').find('input, textarea').attr('disabled', true);
-                $form.find('button').attr('disabled', true);
+                var formData = new FormData($('#person-form')[0]);
+                var message =  $('#form-loading');
+                $form.find('.form-control').find('input, textarea', 'button').attr('disabled', true);
                 $form.attr('class', 'hidden');
-                $('#form-loading').html('<img src="/static/712.gif"/>');
-                $.ajaxSetup({
-                    beforeSend: function(xhr, settings) {
-                       if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                             xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                        }
-                    }
-                });
+                message.html('<img src="/static/712.gif"/>');
+                
                 $.ajax({
                     url: $(form).attr('action'),
                     type: $(form).attr('method'),
-                    data: $(form).serialize(),
-                    success: function(data){
-                        var json_data = $.parseJSON(data);
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: beforeSendHandler,
+                })
+                .done(function(data){
+                        var json_data = $.parseJSON(JSON.stringify(data));
                         if (json_data['msg']){
-                           $('#form-loading').html('<h3>' + json_data['msg'] + '</h3>');
+                           message.html('<h3>' + json_data['msg'] + '</h3>');
                         } else{
-                            $('#form-loading').html('');
+                            message.html('');
                             $form.attr('class', 'show');
-                            $form.find('.form-control').find('input, textarea').attr('disabled', false);
-                            $form.find('button').attr('disabled', false);  
+                            $form.find('.form-control').find('input, textarea', 'button').attr('disabled', false);
+                            
                             $.each(json_data, function(i, val) {
                                 $("#error_" + i).text(val);
                             });
                         }
-                     },
-                     headers: { 'X_METHODOVERRIDE': 'PUT' }
-                 })
-                 .done(function(){
+                })
+                .fail(function(xhr, str){
+                      message.html('<h3>Возникла ошибка: ' + xhr.responseCode + '</h3>');
+                })
+                .always(function(){
                     $form.find('.form-control').find('input, textarea').attr('disabled', false);
                     $form.find('button').attr('disabled', false);
                     $(form).trigger('reset');
