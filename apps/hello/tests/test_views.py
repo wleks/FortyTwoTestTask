@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.contrib.auth.models import AnonymousUser
 
-from ..models import Person
+from ..models import Person, RequestStore
 from ..views import home_page
 
 
@@ -105,19 +105,24 @@ class HomePageViewTest(TestCase):
 
 class RequestAjaxTest(TestCase):
     def test_request_ajax_view(self):
-        """Test request_ajax view"""
+        """Test check that request_ajax view returns appropriate
+           method, path and number of new_request by ajax
+           when transition to home page: 'GET' and '/'
+        """
         response = self.client.get(reverse('contact:home'))
         response = self.client.get(reverse('contact:request_ajax'),
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertIn('method', response.content)
         self.assertIn('GET', response.content)
-        self.assertIn('path', response.content)
         self.assertIn('/', response.content)
+        self.assertIn('1', response.content)
 
 
 class RequestViewTest(TestCase):
     def test_request_view(self):
-        """Test request_view view"""
+        """
+        Test check access to request_view page
+        and used template request.html.
+        """
 
         response = self.client.get(reverse('contact:request'))
 
@@ -126,3 +131,43 @@ class RequestViewTest(TestCase):
         self.assertContains(response,
                             '<h1>42 Coffee Cups Test Assignmen</h1>',
                             html=True)
+
+    def test_request_ajax_content_empty_db(self):
+        """
+        Test check that request_ajax view returns
+        empty response when transition to request_view page.
+        """
+
+        response = self.client.get(reverse('contact:request_ajax'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # check that db is empty
+        request_store_count = RequestStore.objects.count()
+        self.assertGreaterEqual(request_store_count, 0)
+        # check response is empty too
+        self.assertIn('0', response.content)
+        self.assertIn('[]', response.content)
+
+    def test_request_ajax_content_record_db_more_10(self):
+        """
+        Test check that request_ajax view returns 10 objects
+        when in db more than 10 records.
+        """
+        self.client.get(reverse('contact:home'))
+        request_store_count = RequestStore.objects.count()
+        self.assertGreaterEqual(request_store_count, 1)
+
+        # create 15 records to db yet
+        req = RequestStore.objects.get(id=1)
+        for i in range(15):
+            req.pk = None
+            req.save()
+
+        # check number of objects in db
+        req_list = RequestStore.objects.count()
+        self.assertEqual(req_list, 16)
+
+        # check that 10 objects in response
+        response = self.client.get(reverse('contact:request_ajax'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(10, response.content.count('pk'))
+        self.assertEqual(10, response.content.count('GET'))
