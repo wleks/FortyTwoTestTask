@@ -72,3 +72,17 @@ class PersonModelTests(TestCase):
         self.assertEquals(only_person.surname, 'Woronow')
         self.assertEquals(only_person.bio, 'I was born ...')
         self.assertEquals(str(only_person), 'Woronow Aleks')
+
+    def test_person_model_method_gauge_height(self):
+        """
+        Test check that method gauge_height maintaining aspect ratio,
+        gauge_height reduce image 200*1000 to 40*200.
+        """
+        person = Person.objects.get(id=1)
+        person.height = 1000
+        person.width = 200
+        person.save()
+
+        size_photo = person.gauge_height()
+        self.assertEquals(size_photo['h'], 200)
+        self.assertEquals(size_photo['w'], 40)
