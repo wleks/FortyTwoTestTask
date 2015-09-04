@@ -172,15 +172,15 @@ class RequestViewTest(TestCase):
         when in db more than 10 records.
         """
 
+        # create 15 records to db
+        for i in range(1, 15):
+            path = '/test%s' % i
+            method = 'GET'
+            RequestStore.objects.create(path=path, method=method)
+
         self.client.get(reverse('contact:home'))
         request_store_count = RequestStore.objects.count()
         self.assertGreaterEqual(request_store_count, 1)
-
-        # create 15 records to db yet
-        req = RequestStore.objects.get(id=1)
-        for i in range(1, 15):
-            req.pk = None
-            req.save()
 
         # check number of objects in db
         req_list = RequestStore.objects.count()
@@ -191,6 +191,10 @@ class RequestViewTest(TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(10, response.content.count('pk'))
         self.assertEqual(10, response.content.count('GET'))
+        self.assertNotIn('/test0', response.content)
+        self.assertNotIn('/test5', response.content)
+        self.assertIn('/test6', response.content)
+        self.assertIn('/', response.content)
 
 
 class FormPageTest(TestCase):
