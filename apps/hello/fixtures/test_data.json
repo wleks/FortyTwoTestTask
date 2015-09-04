@@ -16,7 +16,7 @@
         "email": "", 
         "date_joined": "2015-08-12T09:19:52.102Z"
     }
-},
+},    
 {
     "pk": 1, 
     "model": "hello.person", 
@@ -24,6 +24,9 @@
         "bio": "I was born ...\r\nI graduated from high school ...", 
         "surname": "Woronow", 
         "name": "Aleksey", 
+        "width": 1358, 
+        "image": "photo/scrin.png", 
+        "height": 765, 
         "other": "", 
         "date_of_birth": "2015-08-22", 
         "skype_id": "", 
