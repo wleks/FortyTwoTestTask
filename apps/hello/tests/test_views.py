@@ -154,7 +154,7 @@ class RequestViewTest(TestCase):
         """
 
         # create 15 records to db
-        for i in range(15):
+        for i in range(1, 15):
             path = '/test%s' % i
             method = 'GET'
             RequestStore.objects.create(path=path, method=method)
@@ -165,7 +165,7 @@ class RequestViewTest(TestCase):
 
         # check number of objects in db
         req_list = RequestStore.objects.count()
-        self.assertEqual(req_list, 16)
+        self.assertEqual(req_list, i+1)
 
         # check that 10 objects in response
         response = self.client.get(reverse('contact:request_ajax'),
