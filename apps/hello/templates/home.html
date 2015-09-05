@@ -23,10 +23,17 @@
          
      </div>     
  </div>
+
  <div class="row">
  <img class="img-thumbnail" src="{% if person.image %}{{person.image.url }}{% endif %}" 
                       width="{{person.gauge_height.w}}" height="{{person.gauge_height.h}}"
                       alt="Towel test photo">
 </div>
+
+ <hr>
+ <div>
+<a href="{% url 'contact:request' %}">requests</a>
+ </div>
+
 {% endblock content %}
 {% block script %}<script src="{% static 'js/reg_ajax.js' %}"></script>{% endblock script %}
