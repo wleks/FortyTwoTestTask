@@ -1,0 +1,20 @@
+.req {
+    font-weight: bold;
+}
+
+.list-group-item,
+.page-header, 
+.nav-tabs {
+    border: 0px;
+}
+
+hr {
+    border: none; 
+    color: black; 
+    background-color: black;
+    height: 2px; 
+}
+
+.textfieldblock {
+    float: none;
+}

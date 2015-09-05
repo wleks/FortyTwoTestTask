@@ -1,24 +1,89 @@
-{% extends "base.html" %}
+{% extends "main.html" %}
+{% load staticfiles %}
 
-{% block content %}
-<h3>Change contact</h3>
+{% block home %}
 
-<form id="person-form"  action="{% url 'contact:form' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+<form id="person-form"  class="form-horizontal" action="{% url 'contact:form' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
     {{form.media}}
-    {% for field in form %}
-    {% if forloop.counter == 5 %}
-      <h3>Contacts</h3>
-    {% endif %}
-    <div class="form-group">
-
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }} <div id="error_{{ field.label|lower}}" class="has-error"></div>
+  <div class="row">
+    <div class="col-md-5">
+        <div class="form-group">
+            <label for="id_name" class="col-sm-3 control-label">Name</label>
+            <div class="col-sm-6">
+                {{ form.name }} 
+            </div>
+           <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="id_surname" class="col-sm-3 control-label">Last Name</label>
+            <div class="col-sm-6">
+              {{ form.surname }} 
+            </div>
+            <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+           <label for="id_date_of_birth" class="col-sm-3 control-label">Date of birth</label>
+           <div class="col-sm-6">
+               {{ form.date_of_birth }} 
+           </div>
+           <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="id_image" class="col-sm-3 control-label">Photo</label>
+            <div class="col-sm-7">
+               {{ form.image}}
+            </div>
+            <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+           <img class="img-thumbnail" src="{{ form.image.value.url }}" alt="Towel test photo">
+        </div>
+    </div> 
+    <div class="col-md-6"> 
+        <div class="form-group">
+            <label for="id_email" class="col-sm-3 control-label">Email</label>
+            <div class="col-sm-5">
+                {{ form.email }} 
+            </div>
+            <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="id_jabber" class="col-sm-3 control-label">Jabber</label>
+            <div class="col-sm-5">
+                {{ form.jabber }} 
+            </div>
+            <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="id_skype_id" class="col-sm-3 control-label">Skype</label>
+            <div class="col-sm-5">
+                {{ form.skype_id }} 
+            </div>
+            <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="id_other" class="col-sm-3 control-label textfieldblock">Other contacts</label>
+            <div class="col-sm-8 textfieldblock">
+                {{ form.other }} 
+            </div>
+            <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="id_bio" class="col-sm-3 control-label textfieldblock">Bio</label>
+            <div class="col-sm-8 textfieldblock">
+                {{ form.bio }} 
+            </div>
+            <div id="error_{{ field.label|lower}}" class="has-error"></div>
+        </div>
     </div>
-    {% endfor %}
-    <button class="btn btn btn-primary" type="submit">Submit</button>
+  </div>
+  <div class="row">
+     <button class="btn btn btn-primary" type="submit">Save</button>
+     <button class="btn btn btn-primary" type="submit">Cancel</button>
+   </div>    
 </form>
 <div id="form-loading"></div>
-{% endblock content %}
+{% endblock home %}
 {% block script %}
      <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js"></script>
      <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
