@@ -18,3 +18,7 @@ hr {
 .textfieldblock {
     float: none;
 }
+
+.errorlist{
+    font-weight: bold;
+}

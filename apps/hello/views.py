@@ -74,10 +74,11 @@ def form_page(request):
                        other=other,
                        image=image)
             p.save()
+
             if request.is_ajax():
                 if getattr(settings, 'DEBUG', False):
                     time.sleep(3)
-                msg = 'Contact was changed'
+                msg = 'Changes have been save'
                 return HttpResponse(json.dumps({"msg": msg}),
                                     content_type="application/json")
             else:
@@ -86,8 +87,14 @@ def form_page(request):
             if request.is_ajax():
                 if getattr(settings, 'DEBUG', False):
                     time.sleep(2)
-                errors = json.dumps(form.errors)
-                return HttpResponse(errors, content_type="application/json")
+                errors_dict = {}
+                if form.errors:
+                    for error in form.errors:
+                        e = form.errors[error]
+                        errors_dict[error] = unicode(e)
+
+                return HttpResponse(json.dumps(errors_dict),
+                                    content_type="application/json")
     else:
         form = PersonForm(instance=person)
 

@@ -29,9 +29,7 @@ $(document).ready(function(){
                 },
                 date_of_birth: {
                     required: true,
-                    minlength: 3,
-                    maxlength: 16,
-
+                    date: true
                 },
                 email: {
                     required: true,
@@ -45,10 +43,11 @@ $(document).ready(function(){
             submitHandler: function(form) {
                 var $form = $(form);
                 var formData = new FormData($('#person-form')[0]);
-                var message =  $('#form-loading');
+                var load =  $('#form-loading');
+                var message = $('#message');
                 $form.find('.form-control').find('input, textarea', 'button').attr('disabled', true);
                 $form.attr('class', 'hidden');
-                message.html('<img src="/static/712.gif"/>');
+                load.html('<img src="/static/712.gif"/>');
                 
                 $.ajax({
                     url: $(form).attr('action'),
@@ -62,24 +61,26 @@ $(document).ready(function(){
                 .done(function(data){
                         var json_data = $.parseJSON(JSON.stringify(data));
                         if (json_data['msg']){
+                           $form.find('.form-control').find('input, textarea').attr('disabled', false);
+                           $form.find('button').attr('disabled', false);
+                           load.html('');
                            message.html('<h3>' + json_data['msg'] + '</h3>');
+                           $form.attr('class', 'show');
+                           $('.datepicker').focus();
                         } else{
-                            message.html('');
+                            $('.errorlist').remove();
+                            load.html('');
                             $form.attr('class', 'show');
                             $form.find('.form-control').find('input, textarea', 'button').attr('disabled', false);
                             
                             $.each(json_data, function(i, val) {
-                                $("#error_" + i).text(val);
+                                var id = '#id_' + i;
+                                $(id).parent('div').prepend(val);
                             });
                         }
                 })
                 .fail(function(xhr, str){
                       message.html('<h3>Возникла ошибка: ' + xhr.responseCode + '</h3>');
-                })
-                .always(function(){
-                    $form.find('.form-control').find('input, textarea').attr('disabled', false);
-                    $form.find('button').attr('disabled', false);
-                    $(form).trigger('reset');
                 });
               
               return false;
