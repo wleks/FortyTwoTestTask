@@ -1,15 +1,32 @@
-{% extends "base.html" %}
+{% extends "main.html" %}
 {% load staticfiles %}
 
-{% block content %}
+{% block home %}
+<div class="row">
+<div class="col-md-12">
+     <div class="col-md-offset-10">
+          <ul class="nav nav-tabs">
+          {% if user.is_authenticated %}
+               <li role="presentation"> <a href="{% url 'logout' %}?next={{ request.path|urlencode }}">Logout</a></li>
+          {% else %}
+               <li role="presentation"> <a href="{% url 'login' %}?next={{ request.path|urlencode }}">Login</a></li>
+          {% endif %}
+           </ul>
+     </div>  
+</div>
+</div>
 <div class="row">
      <div class="col-md-6">
           <ul class="list-group">
                <li class="list-group-item">{{ person.name }}</li>
                <li class="list-group-item">{{ person.surname }}</li>
                <li class="list-group-item">{{ person.date_of_birth }}</li>
-               <li class="list-group-item">Bio:</li>
-               <li class="list-group-item">{{ person.bio|linebreaks }}</li>
+               <li class="list-group-item">Photo:</li>
+               <li class="list-group-item">
+                    <img class="img-thumbnail" src="{% if person.image %}{{ person.image.url }}{% endif %}" 
+                         width="{{person.gauge_height.w}}" height="{{person.gauge_height.h}}"
+                         alt="Towel test photo">
+               </li>
           </ul>
      </div>      
      <div class="col-md-6">
@@ -19,21 +36,9 @@
                <li class="list-group-item">Skype: {{ person.skype_id }}</li>
                <li class="list-group-item">Other contacts:</li>
                <li class="list-group-item">{{ person.other }}</li>
+               <li class="list-group-item">Bio:</li>
+               <li class="list-group-item">{{ person.bio|linebreaks }}</li>
           </ul>
-         
-     </div>     
+     </div>
  </div>
-
- <div class="row">
- <img class="img-thumbnail" src="{% if person.image %}{{person.image.url }}{% endif %}" 
-                      width="{{person.gauge_height.w}}" height="{{person.gauge_height.h}}"
-                      alt="Towel test photo">
-</div>
-
- <hr>
- <div>
-<a href="{% url 'contact:request' %}">requests</a>
- </div>
-
-{% endblock content %}
-{% block script %}<script src="{% static 'js/reg_ajax.js' %}"></script>{% endblock script %}
+{% endblock home %}

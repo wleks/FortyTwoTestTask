@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% block home %}{% endblock home %}
+
+<hr height='5px'>
+
+{% block request%}
+  <a href="{% url 'contact:request' %}">requests</a>
+{% endblock request %}
+
+{% endblock content %}

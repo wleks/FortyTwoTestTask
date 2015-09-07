@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 from django.core import serializers
+from django.http import HttpResponseBadRequest
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -32,8 +33,8 @@ def request_ajax(request):
     if request.is_ajax():
         new_request = RequestStore.objects.filter(new_request=1).count()
         request_list = RequestStore.objects.all()[:10]
-        list = serializers.serialize("json", request_list)
-        data = json.dumps((new_request, list))
+        list_req = serializers.serialize("json", request_list)
+        data = json.dumps((new_request, list_req))
         return HttpResponse(data, content_type="application/json")
 
     return None
@@ -62,22 +63,24 @@ def form_page(request):
                 if image is None:
                     image = person.image
 
-            p = Person(id=person.id,
-                       name=name,
-                       surname=surname,
-                       date_of_birth=date_of_birth,
-                       bio=bio,
-                       email=email,
-                       jabber=jabber,
-                       skype_id=skype_id,
-                       other=other,
-                       image=image)
-            p.save()
+            person = Person(id=person.id,
+                            name=name,
+                            surname=surname,
+                            date_of_birth=date_of_birth,
+                            bio=bio,
+                            email=email,
+                            jabber=jabber,
+                            skype_id=skype_id,
+                            other=other,
+                            image=image)
+            person.save()
+
             if request.is_ajax():
                 if getattr(settings, 'DEBUG', False):
                     time.sleep(3)
-                msg = 'Contact was changed'
-                return HttpResponse(json.dumps({"msg": msg}),
+
+                list_pers = serializers.serialize("json", [person, ])
+                return HttpResponse(json.dumps(list_pers),
                                     content_type="application/json")
             else:
                 return redirect('contact:success')
@@ -85,9 +88,15 @@ def form_page(request):
             if request.is_ajax():
                 if getattr(settings, 'DEBUG', False):
                     time.sleep(2)
-                errors = json.dumps(form.errors)
-                return HttpResponse(errors, content_type="application/json")
+                errors_dict = {}
+                if form.errors:
+                    for error in form.errors:
+                        e = form.errors[error]
+                        errors_dict[error] = unicode(e)
+
+                return HttpResponseBadRequest(json.dumps(errors_dict),
+                                              content_type="application/json")
     else:
-        form = PersonForm(instance=person)
+        form = PersonForm()
 
     return render(request, 'form.html', {'form': form})

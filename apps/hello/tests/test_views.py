@@ -11,7 +11,7 @@ from ..views import home_page
 
 
 class HomePageViewTest(TestCase):
-    fixtures = ['test_data.json']
+    fixtures = ['_initial_data.json']
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -103,23 +103,6 @@ class HomePageViewTest(TestCase):
         self.assertNotContains(response, 'iv@i.ua')
         self.assertNotContains(response, 'iv@khavr.com')
 
-    def test_correct_show_image_home_page(self):
-        """
-        Test check correct edit data.
-        """
-
-        # size image in db
-        self.assertEqual(self.person.height, 765)
-        self.assertEqual(self.person.width, 1358)
-        size_photo = self.person.gauge_height()
-
-        # check that size image is shown at home page reduced
-        response = self.client.get(reverse('contact:home'))
-        self.assertNotContains(response, self.person.height)
-        self.assertNotContains(response, self.person.width)
-        self.assertContains(response, size_photo['h'])
-        self.assertContains(response, size_photo['w'])
-
 
 class RequestAjaxTest(TestCase):
     def test_request_ajax_view(self):
@@ -198,7 +181,7 @@ class RequestViewTest(TestCase):
 
 
 class FormPageTest(TestCase):
-    fixtures = ['test_data.json']
+    fixtures = ['_initial_data.json']
 
     def setUp(self):
         self.person = Person.objects.first()
@@ -206,7 +189,7 @@ class FormPageTest(TestCase):
     def test_form_page_view(self):
         """
         Test check access to form page only authenticate
-        users and used template request.html.
+        users and it used template request.html.
         """
 
         # if user is not authenticate
@@ -217,24 +200,51 @@ class FormPageTest(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.get(reverse('contact:form'))
         self.assertTemplateUsed(response, 'form.html')
-        self.assertIn(self.person.name, response.content)
 
     def test_form_page_edit_data(self):
-        """
-        Test check correct edit data.
-        """
+        """Test check edit data at form page."""
 
-        # check that data are shown at form page according to db data
         self.client.login(username='admin', password='admin')
-        response = self.client.get(reverse('contact:form'))
-        self.assertIn(self.person.name, response.content)
-        self.assertIn(self.person.surname, response.content)
 
         # edit data by form page
-        response = self.client.post(reverse('contact:form'),
-                                    {'name': 'Ivan', 'surname': 'Ivanov'})
+        data = dict(name='Ivan', surname='Ivanov',
+                    date_of_birth='2005-01-02',
+                    bio='', email='ivanov@yandex.ru',
+                    jabber='iv@jabb.com')
+
+        response = self.client.post(reverse('contact:form'), data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        self.assertEqual(response.status_code, 200)
+
         # data are shown at form page according to changed data
         self.assertNotIn(self.person.name, response.content)
         self.assertNotIn(self.person.surname, response.content)
+        self.assertNotIn(self.person.date_of_birth.strftime('%Y-%m-%d'),
+                         response.content)
+        self.assertNotIn(self.person.email, response.content)
+        self.assertNotIn(self.person.jabber, response.content)
+
         self.assertIn('Ivan', response.content)
         self.assertIn('Ivanov', response.content)
+        self.assertIn('2005-01-0', response.content)
+        self.assertIn('ivanov@yandex.ru', response.content)
+        self.assertIn('iv@jabb.com', response.content)
+
+        # check enter empty name and invalid data_of_birth, email
+        data['name'] = ''
+        data['date_of_birth'] = 200
+        data['email'] = 'ivan@'
+
+        response = self.client.post(reverse('contact:form'), data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 400)
+
+        # response errors
+        self.assertIn('This field is required.', response.content)
+        self.assertIn('Enter a valid date.', response.content)
+        self.assertIn('Enter a valid email address.', response.content)
+
+        # data in db did not change
+        edit_person = Person.objects.first()
+        self.assertEqual('Ivan', edit_person.name)
