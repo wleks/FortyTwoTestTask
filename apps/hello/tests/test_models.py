@@ -3,10 +3,30 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from datetime import date
+from PIL import Image as Img
+import StringIO
 
 from ..models import Person
+
+
+# create image file for test
+def get_temporary_image():
+        output = StringIO.StringIO()
+        size = (1200, 700)
+        color = (255, 0, 0, 0)
+        image = Img.new("RGBA", size, color)
+        image.save(output, format='JPEG')
+        image_file = InMemoryUploadedFile(output,
+                                          None,
+                                          'test.jpg',
+                                          'jpeg',
+                                          output.len,
+                                          None)
+        image_file.seek(0)
+        return image_file
 
 
 class PersonModelTests(TestCase):
@@ -73,16 +93,19 @@ class PersonModelTests(TestCase):
         self.assertEquals(only_person.bio, 'I was born ...')
         self.assertEquals(str(only_person), 'Woronow Aleks')
 
-    def test_person_model_method_gauge_height(self):
+    def test_person_model_image(self):
         """
-        Test check that method gauge_height maintaining aspect ratio,
-        gauge_height reduce image 200*1000 to 40*200.
+        Test check that overwritten save method maintaining aspect ratio
+        and reduce image to <= 200*200.
         """
+
+        # save image file
         person = Person.objects.get(id=1)
-        person.height = 1000
-        person.width = 200
+        person.image = get_temporary_image()
         person.save()
 
-        size_photo = person.gauge_height()
-        self.assertEquals(size_photo['h'], 200)
-        self.assertEquals(size_photo['w'], 40)
+        # check that height and width <= 200
+        self.assertTrue(person.height <= 200)
+        self.assertTrue(person.width <= 200)
+
+        person.delete()
