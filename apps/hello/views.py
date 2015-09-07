@@ -98,6 +98,6 @@ def form_page(request):
                 return HttpResponseBadRequest(json.dumps(errors_dict),
                                               content_type="application/json")
     else:
-        form = PersonForm()
+        form = PersonForm(initial={'image': person.image})
 
     return render(request, 'form.html', {'form': form})

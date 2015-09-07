@@ -32,4 +32,4 @@ class PersonForm(ModelForm):
         }
 
     class Media:
-        js = ('js/change_person_data.js',)
+        js = ('js/change_contact.js',)
