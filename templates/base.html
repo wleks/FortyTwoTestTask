@@ -28,7 +28,9 @@
                 <div class="col-md-6">
                     <ul class="nav nav-tabs">
                         <li role="presentation"><a href="{% url 'contact:home' %}">Home</a></li>
+                        {% if user.is_authenticated %}
                         <li role="presentation"><a href="{% url 'contact:form' %}">Change contact</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>    
