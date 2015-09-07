@@ -5,6 +5,7 @@ from django.test.client import RequestFactory
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.contrib.auth.models import AnonymousUser
+from django.template import Context, Template
 
 from ..models import Person, RequestStore
 from ..views import home_page
@@ -244,3 +245,18 @@ class FormPageTest(TestCase):
         # data in db did not change
         edit_person = Person.objects.first()
         self.assertEqual('Ivan', edit_person.name)
+
+
+class EditLinkTagTest(TestCase):
+    TEMPLATE_TAG = Template('{% load edit_link %} {% edit_link person %}')
+    TEMPLATE_FOR_TAG = Template('<a href="{{ edit_link }}">{{ model }}</a>')
+
+    def setUp(self):
+        self.person = Person.objects.first()
+
+    def test_edit_link_tag(self):
+        """Test check ."""
+        context_person = Context({'person': self.person})
+        context_edit_link = Context(edit_link(self.person))
+        self.assertEqual(self.TEMPLATE_TAG.render(context_person).strip(),
+                         self.TEMPLATE_FOR_TAG.render(context_edit_link))
