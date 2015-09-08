@@ -104,17 +104,31 @@ class HomePageViewTest(TestCase):
 
 
 class RequestAjaxTest(TestCase):
+    fixtures = ['_initial_data.json']
+
     def test_request_ajax_view(self):
         """Test check that request_ajax view returns appropriate
            method, path and number of new_request by ajax
-           when transition to home page: 'GET' and '/'
+           when transition to home page.
         """
-        response = self.client.get(reverse('contact:home'))
+
+        # page is viewed by not uesr: path-'/', method-'GET', new_request-1
+        self.client.get(reverse('contact:home'))
+        response = self.client.get(reverse('contact:request_ajax'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        self.assertIn('GET', response.content)
+        self.assertIn('/', response.content)
+        self.assertIn('1', response.content[1])
+
+        # page is viewed by uesr: path-'/', method-'GET', new_request-0
+        self.client.login(username='admin', password='admin')
+        self.client.get(reverse('contact:home'))
         response = self.client.get(reverse('contact:request_ajax'),
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertIn('GET', response.content)
         self.assertIn('/', response.content)
-        self.assertIn('1', response.content)
+        self.assertIn('0', response.content[1])
 
 
 class RequestViewTest(TestCase):
