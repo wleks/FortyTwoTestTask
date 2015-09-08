@@ -8,6 +8,7 @@ from django.contrib.auth.models import AnonymousUser
 
 from ..models import Person, RequestStore
 from ..views import home_page
+from test_models import get_temporary_image
 
 
 class HomePageViewTest(TestCase):
@@ -244,3 +245,25 @@ class FormPageTest(TestCase):
         # data in db did not change
         edit_person = Person.objects.first()
         self.assertEqual('Ivan', edit_person.name)
+
+    def test_form_page_upload_image(self):
+        """Test check upload image file in form page."""
+
+        data = dict(name='Ivan', surname='Ivanov',
+                    date_of_birth='2005-01-02',
+                    bio='', email='ivanov@yandex.ru',
+                    jabber='iv@jabb.com',
+                    image=get_temporary_image())
+
+        self.client.login(username='admin', password='admin')
+
+        # submitting test.jpg that was retuned get_temporary_image function
+        self.client.post(reverse('contact:form'), data,
+                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        person = Person.objects.first()
+        # check that name of image file in db is test.jpg
+        self.assertEqual('test.jpg', person.image.name.split('/')[-1])
+
+        # delete test.jpg file
+        person.delete()

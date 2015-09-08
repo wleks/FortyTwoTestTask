@@ -38,7 +38,7 @@ class Person(models.Model):
             output.seek(0)
             self.image = InMemoryUploadedFile(output,
                                               'ImageField',
-                                              "%s.jpg" % self.image.name,
+                                              "%s" % self.image.name,
                                               'image/jpeg',
                                               output.len,
                                               None)
