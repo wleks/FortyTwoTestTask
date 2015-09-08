@@ -9,6 +9,7 @@ from django.template import Context, Template
 
 from ..models import Person, RequestStore
 from ..views import home_page
+from ..templatetags.edit_link import edit_link
 
 
 class HomePageViewTest(TestCase):
@@ -248,6 +249,7 @@ class FormPageTest(TestCase):
 
 
 class EditLinkTagTest(TestCase):
+    fixtures = ['_initial_data.json']
     TEMPLATE_TAG = Template('{% load edit_link %} {% edit_link person %}')
     TEMPLATE_FOR_TAG = Template('<a href="{{ edit_link }}">{{ model }}</a>')
 
@@ -255,7 +257,10 @@ class EditLinkTagTest(TestCase):
         self.person = Person.objects.first()
 
     def test_edit_link_tag(self):
-        """Test check ."""
+        """Test check that loaded in template edit_link is equal
+           tag function return that render to template of tag.
+        """
+
         context_person = Context({'person': self.person})
         context_edit_link = Context(edit_link(self.person))
         self.assertEqual(self.TEMPLATE_TAG.render(context_person).strip(),

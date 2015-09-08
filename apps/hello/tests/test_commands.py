@@ -15,7 +15,7 @@ class CommandsTestCase(TestCase):
         out = StringIO()
         call_command('showmodels', stdout=out, stderr=out)
 
-        # check number of objects model Person is 0 
+        # check number of objects model Person is 0
         self.assertIn('Person - 0', out.getvalue())
         self.assertIn('error:', out.getvalue())
 
@@ -24,6 +24,6 @@ class CommandsTestCase(TestCase):
                               date_of_birth=date(2105, 7, 14),
                               email='hello@i.ua',
                               jabber='42cc@khavr.com')
-        # number of objects model Person is 1, after person is created                        
+        # number of objects model Person is 1, after person is created
         call_command('showmodels', stdout=out, stderr=out)
         self.assertIn('Person - 1', out.getvalue())

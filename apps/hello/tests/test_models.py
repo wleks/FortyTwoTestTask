@@ -9,7 +9,7 @@ from datetime import date
 from PIL import Image as Img
 import StringIO
 
-from ..models import Person
+from ..models import Person, NoteModel
 
 
 # create image file for test
@@ -109,3 +109,28 @@ class PersonModelTests(TestCase):
         self.assertTrue(person.width <= 200)
 
         person.delete()
+
+
+class NoteModelTestCase(TestCase):
+    fixtures = ['test_data.json']
+
+    def test_signal_processor(self):
+        """Test signal processor records create,
+           change and delete object.
+        """
+        # check action_type after created object (loaded fixtures) is 0
+        note = NoteModel.objects.get(model='Person')
+        self.assertEqual(note.action_type, 0)
+
+        # check action_type after change object is 1
+        person = Person.objects.first()
+        person.name = 'Change'
+        person.save()
+        note = NoteModel.objects.filter(model='Person').last()
+        self.assertEqual(note.action_type, 1)
+
+        # check record after delete object is 2
+        person = Person.objects.first()
+        person.delete()
+        note = NoteModel.objects.last()
+        self.assertEqual(note.action_type, 2)
