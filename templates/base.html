@@ -42,8 +42,10 @@
                 <div class="col-md-8">    
                    <h1>42 Coffee Cups Test Assignmen</h1>
                 </div>
-                 <div class="col-md-4">    
-                    <a href="{% url 'contact:form' %}">Edit</a>({% load edit_link %} {% edit_link person %})
+                 <div class="col-md-4">
+                     {% if person %}
+                        <a href="{% url 'contact:form' %}">Edit</a> ({% load edit_link %} {% edit_link person %})
+                     {% endif %}
                  </div> 
             </div>
             <div class="row">
