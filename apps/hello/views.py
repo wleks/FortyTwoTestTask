@@ -19,12 +19,13 @@ def home_page(request):
     context = {}
     person = Person.objects.first()
     context['person'] = person
+    if request.user.is_authenticated():
+        RequestStore.objects.filter(new_request=1).update(new_request=0)
     return render(request, 'home.html', context)
 
 
 @not_record_request
 def request_view(request):
-    RequestStore.objects.filter(new_request=1).update(new_request=0)
     return render(request, 'request.html')
 
 
