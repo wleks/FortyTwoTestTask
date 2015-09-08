@@ -114,6 +114,7 @@ class RequestAjaxTest(TestCase):
 
         # page is viewed by not uesr: path-'/', method-'GET', new_request-1
         self.client.get(reverse('contact:home'))
+        self.client.get(reverse('contact:request'))
         response = self.client.get(reverse('contact:request_ajax'),
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
@@ -123,7 +124,7 @@ class RequestAjaxTest(TestCase):
 
         # page is viewed by uesr: path-'/', method-'GET', new_request-0
         self.client.login(username='admin', password='admin')
-        self.client.get(reverse('contact:home'))
+        self.client.get(reverse('contact:request'))
         response = self.client.get(reverse('contact:request_ajax'),
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertIn('GET', response.content)
