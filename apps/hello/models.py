@@ -38,15 +38,16 @@ class Person(models.Model):
             output.seek(0)
             self.image = InMemoryUploadedFile(output,
                                               'ImageField',
-                                              "%s.jpg" % self.image.name,
+                                              "%s" % self.image.name,
                                               'image/jpeg',
                                               output.len,
                                               None)
         super(Person, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        if os.path.isfile(self.image.path):
-            os.remove(self.image.path)
+        if self.image:
+            if os.path.isfile(self.image.path):
+                os.remove(self.image.path)
 
         super(Person, self).delete(*args, **kwargs)
 
@@ -68,3 +69,21 @@ class RequestStore(models.Model):
 
     class Meta:
         ordering = ["-date"]
+
+
+class NoteModel(models.Model):
+    ACTION_TYPE = (
+        (0, 'created'),
+        (1, 'changed'),
+        (2, 'deleted')
+    )
+    model = models.CharField('model', max_length=50)
+    inst = models.CharField('instance', max_length=250)
+    action_type = models.PositiveIntegerField('action type',
+                                              max_length=1,
+                                              choices=ACTION_TYPE)
+
+    def __unicode__(self):
+        return "%s  %s: %s " % (self.model,
+                                self.get_action_type_display(),
+                                self.inst)
