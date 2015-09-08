@@ -251,7 +251,7 @@ class FormPageTest(TestCase):
 class EditLinkTagTest(TestCase):
     fixtures = ['_initial_data.json']
     TEMPLATE_TAG = Template('{% load edit_link %} {% edit_link person %}')
-    TEMPLATE_FOR_TAG = Template('<a href="{{ edit_link }}">{{ model }}</a>')
+    TEMPLATE_FOR_TAG = Template('<a href="{{ edit_link }}">admin</a>')
 
     def setUp(self):
         self.person = Person.objects.first()

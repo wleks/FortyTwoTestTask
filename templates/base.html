@@ -25,21 +25,31 @@
     <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
         <div class="container">
              <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <ul class="nav nav-tabs">
                         <li role="presentation"><a href="{% url 'contact:home' %}">Home</a></li>
                         {% if user.is_authenticated %}
-                        <li role="presentation"><a href="{% url 'contact:form' %}">Change contact</a></li>
+                            <li role="presentation"> <a href="{% url 'logout' %}?next={{ request.path|urlencode }}">Logout</a></li>
+                         {% else %}
+                            <li role="presentation"> <a href="{% url 'login' %}?next={{ request.path|urlencode }}">Login</a></li>
                         {% endif %}
+                        
                     </ul>
                 </div>
             </div>    
-            <div class="row">    
-                <div class="page-header">
-                    <h1>42 Coffee Cups Test Assignmen</h1>
-                 </div>    
+            <div class="row">
+                <div class="col-md-8">    
+                   <h1>42 Coffee Cups Test Assignmen</h1>
+                </div>
+                 <div class="col-md-4">    
+                    <a href="{% url 'contact:form' %}">Edit</a>({% load edit_link %} {% edit_link person %})
+                 </div> 
             </div>
-        {% block content %}{% endblock content %}
+            <div class="row">
+                <div class="col-md-8"> 
+                  {% block content %}{% endblock content %}
+                </div>
+             </div>
         </div>
         
         <script src="{% static 'bootstrap-3.3.5-dist/js/bootstrap.min.js' %}"></script> 
