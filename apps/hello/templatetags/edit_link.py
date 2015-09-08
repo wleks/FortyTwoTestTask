@@ -15,7 +15,6 @@ def edit_link(obj):
                     (model.app_label, model.model, int(obj.id))
         return {
             'edit_link': edit_link,
-            'model': model.model,
         }
 
     return None
