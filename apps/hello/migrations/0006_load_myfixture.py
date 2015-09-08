@@ -7,7 +7,8 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        "Write your  forwards methods here."
+        from django.core.management import call_command
+        call_command("loaddata", "_initial_data.json")
 
     def backwards(self, orm):
         "Write your backwards methods here."
