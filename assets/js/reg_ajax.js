@@ -26,7 +26,7 @@ var helloRequest = (function($){
          $.ajax({
              url: '/request_ajax/',
              dataType : "json",
-             success: function (data, textStatus) {
+             success: function(data, textStatus) {
                  handleRequest(data);
              }
          });
@@ -34,6 +34,15 @@ var helloRequest = (function($){
  };
 })(jQuery);
 
+$(window).on('focus', function() {
+    $.ajax({
+        url: '/requests/',
+        method: 'GET',
+        success: function() {
+             console.log('requests is viewed');
+        }
+    });
+});
 
 $(document).ready(function(){
     helloRequest.loadRequest();
