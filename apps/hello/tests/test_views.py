@@ -200,6 +200,48 @@ class RequestViewTest(TestCase):
         self.assertIn('/test6', response.content)
         self.assertIn('/', response.content)
 
+    def test_request_ajax_post_request(self):
+        """
+        Test check request_ajax view change priority
+        when get POST with priority.
+        """
+
+        # pass to home page
+        self.client.get(reverse('contact:home'))
+        request_store = RequestStore.objects.first()
+
+        # check record RequestStore contains:
+        # method - 'GET' and default priority - 0
+        self.assertEqual(request_store.path, '/')
+        self.assertEqual(request_store.method, 'GET')
+        self.assertEqual(request_store.priority, 0)
+
+        # POST to request_ajax view request with path - '/'and priority - '2'
+        response = self.client.post(reverse('contact:request_ajax'),
+                                    {'path': '/', 'priority': '2'},
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # check response is 'ok'
+        self.assertIn('ok', response.content)
+
+        request_store = RequestStore.objects.first()
+
+        # and priority changed to '2'
+        self.assertEqual(request_store.path, '/')
+        self.assertEqual(request_store.method, 'GET')
+        self.assertEqual(request_store.priority, 2)
+
+        # POST to request_ajax view request with path - '/'and priority - '-2'
+        response = self.client.post(reverse('contact:request_ajax'),
+                                    {'path': '/', 'priority': '-2'},
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        request_store = RequestStore.objects.first()
+
+        # and priority didn't changed
+        self.assertEqual(request_store.path, '/')
+        self.assertEqual(request_store.method, 'GET')
+        self.assertEqual(request_store.priority, 2)
+
 
 class FormPageTest(TestCase):
     fixtures = ['_initial_data.json']
