@@ -18,6 +18,11 @@ class RequestMiddle(object):
             req.path = request.path
             req.method = request.method
 
+            existent_reg = RequestStore.objects\
+                                       .filter(path=request.path).first()
+            if existent_reg is not None:
+                req.priority = existent_reg.priority
+
             if request.user.is_authenticated():
                 req.user = request.user
 

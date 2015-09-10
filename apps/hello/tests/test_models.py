@@ -4,12 +4,13 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
 
 from datetime import date
 from PIL import Image as Img
 import StringIO
 
-from ..models import Person, NoteModel
+from ..models import Person, NoteModel, RequestStore
 
 
 # create image file for test
@@ -115,8 +116,9 @@ class NoteModelTestCase(TestCase):
     fixtures = ['test_data.json']
 
     def test_signal_processor(self):
-        """Test signal processor records create,
-           change and delete object.
+        """
+        Test signal processor records create,
+        change and delete object.
         """
         # check action_type after created object (loaded fixtures) is 0
         note = NoteModel.objects.get(model='Person')
@@ -134,3 +136,31 @@ class NoteModelTestCase(TestCase):
         person.delete()
         note = NoteModel.objects.last()
         self.assertEqual(note.action_type, 2)
+
+
+class RequestModelTestCase(TestCase):
+    def test_record_priority_field(self):
+        """
+        Test record priority field.
+        """
+
+        # pass to home page
+        self.client.get(reverse('contact:home'))
+        request_store = RequestStore.objects.first()
+
+        # check record RequestStore contains:
+        # method - 'GET' and default priority - 0
+        self.assertEqual(request_store.path, '/')
+        self.assertEqual(request_store.method, 'GET')
+        self.assertEqual(request_store.priority, 0)
+
+        # change priority to 1 and send POST to home page
+        request_store.priority = 1
+        request_store.save()
+        self.client.post(reverse('contact:home'))
+
+        # check record RequestStore contains:
+        # method - 'POST' and default priority - 1
+        request_store = RequestStore.objects.first()
+        self.assertEqual(request_store.method, 'POST')
+        self.assertEqual(request_store.priority, 1)
