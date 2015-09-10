@@ -22,3 +22,11 @@ hr {
 .errorlist{
     font-weight: bold;
 }
+
+table a {
+    color: black;
+}
+
+.text-center {
+    text-align: center !important;
+}

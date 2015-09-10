@@ -8,7 +8,22 @@
 
 <h3>Requests</h3>
 
-<table id="request" class="table table-bordered"></table>
+<table id="request" class="table">
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Method</th>
+        <th>Priority</th>
+        <th>Up</th>
+        <th>Down</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
 {% endblock content %}
-{% block script %}<script src="{% static 'js/reg_ajax.js' %}"></script>{% endblock script %}
+{% block script %}
+    <script src="{% static 'js/req_ajax.js' %}"></script>
+    <script src="{% static 'js/req_ajax_priority.js' %}"></script>
+{% endblock script %}
