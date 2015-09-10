@@ -7,7 +7,8 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        "Write your  forwards methods here."
+        from django.core.management import call_command
+        call_command("loaddata", "_initial_data.json")
 
     def backwards(self, orm):
         "Write your backwards methods here."
@@ -78,6 +79,7 @@ class Migration(DataMigration):
             'method': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'new_request': ('django.db.models.fields.PositiveIntegerField', [], {'default': '1'}),
             'path': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
+            'priority': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
         }
     }
